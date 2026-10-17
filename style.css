@@ -1,0 +1,140 @@
+:root{
+    --background-color: #e7e7e7;
+    --white-color: #f7f7f7;
+}
+*{
+    font-family: sans-serif;
+}
+html, body{
+    margin: 0;
+    padding: 0;
+    padding: 1vh 2vw;
+}
+body{
+    background: var(--background-color);
+}
+.store-img{
+    width: 25vw;
+    height: 20vw;
+    border-radius: 8px;
+}
+.header{
+    display: flex;
+    gap: 2vw;
+    max-width: 70vw;
+    min-width: 50vw;
+    align-items: center;
+}
+.properties-container{
+    width: 50vw;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.options-container{
+    top: 0;
+    right: 0;
+    position: absolute;
+    width: 80%;
+    height: auto;
+    min-height: 3vh;
+    background: var(--white-color);
+    border-radius: 5px;
+    border: solid #efefef 1px;
+    box-shadow: 0 0 0 0 #000;
+    transition: height .5s;
+}
+.possibleProducts-container{
+    z-index: 1;
+}
+.possibleClient-container{
+    z-index: 0;
+}
+.possibleOption{
+    padding:5px 10px;
+    margin: 0;
+    border-bottom: solid #efefef 1px;
+}
+.possibleOption:hover{
+    outline: solid #676767 1px;
+}
+.property-title{
+    margin: 5px 0;
+}
+.input{
+    outline: none;
+    border: none;
+    padding: 5px 4px;
+    border-bottom: #5e5e5e solid 2px;
+    border-radius: 2px;
+}
+.selecter-container{
+    position: relative;
+    display: flex;
+    gap: 8px;
+}
+#option-chosen{
+    background: #c1c1c1;
+}
+.bill-container{
+    margin-top: 2vh;
+    width: 70vw;
+    background: var(--white-color);
+    padding: 1vh 1vw;
+    border-radius: 8px;
+}
+.bill-text{
+    display: inline-block;
+    width: auto;
+    padding: 0 8px;
+    margin: 10px 0px;
+    font-size: 20px;
+    font-family: 'VT323', courier, monospace;
+    -webkit-font-smoothing: none;
+    text-align: center;
+    text-shadow: 0.5px 0px 0px #000, -0.5px 0px 0px #000;
+}
+.products-container-title-container, .product, .totalPrice-container{
+    display: flex;
+    justify-content: space-between;
+    padding: 0 1vw;
+}
+.button{
+    width: 10vw;
+    height: 8vh;
+    margin: 5px 5px;
+    border-radius: 3px;
+    border: solid #515151 1px;
+}
+.totalPrice-container{
+    margin-top: 4vh;
+    border-top: 1px solid #636363;
+}
+.bill-date-text .bill-text, .bill-id-container .bill-text{
+    margin: 4px 0;
+}
+.bill-client-container .bill-text{
+    margin: 20px 0 0px 0;
+}
+.bill-itemsAmount-container .bill-text{
+    margin-top: 0;
+}
+.product{
+    border-radius: 4px;
+    cursor: pointer;
+}
+.product-name, .product-price{
+    margin: 2px 0;
+}
+.product:hover{
+    background: #d1d1d1;
+    
+}
+.main{
+    display: flex;
+    gap: 3vw;
+    align-items: flex-start;
+}
+.buttons-container{
+    width: 12vw;
+}

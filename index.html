@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Punto de venta V1.1.S TIENDA "LOS PARIENTES"</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="style.css">
+    </head>
+    <body>
+        <header class="header">
+            <img src="logue.jpg" class="store-img">
+            <div class="properties-container">
+                <div class="productProperties properties-container">
+                    <p class="input-title property-title">Buscador de producto</p>
+                    <input class="inputProduct input" placeholder="Escribir producto...">
+                    <div class="product-selecter selecter-container">
+                        <p class="property-title">Producto</p>
+                        <div class="possibleProducts-container options-container">
+                            <!--p id="option-chosen" class="possibleProduct possibleOption">tomate</p>
+                            <p class="possibleProduct possibleOption">Platano</p>
+                            <p class="possibleProduct possibleOption">Yuca</p>
+                            <p class="possibleProduct possibleOption">Ñame</p-->
+                        </div>
+                    </div>
+                </div>
+                <div class="clientProperties properties-container">
+                    <p class="input-title property-title">Buscador de Cliente</p>
+                    <input class="inputClient input" placeholder="Escribir cliente...">
+                    <div class="client-selecter selecter-container">
+                        <p class="property-title">Cliente</p>
+                        <div class="possibleClient-container options-container">
+                            <!--p class="possibleProduct possibleOption">Tia pia</p>
+                            <p class="possibleProduct possibleOption">Maria</p>
+                            <p class="possibleProduct possibleOption">Pedro</p>
+                            <p class="possibleProduct possibleOption">Juan</p-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <main class="main">
+            <div class="bill-container">
+                <div class="bill-date-text">
+                    <p class="bill-text">Venta iniciada el</p>
+                    <p class="bill-text bill-date">13/oct/2026</p>
+                    <p class="bill-text bill-time">1:22:12 pm</p>
+                </div>
+                <div class="bill-id-container">
+                    <p class="bill-text">Nr de transacción: </p>
+                    <p class="bill-text bill-id">46</p>
+                </div>
+                <div class="bill-client-container">
+                    <p class="bill-text">Cliente: </p>
+                    <p class="bill-text bill-client"></p>
+                </div>
+                <div class="bill-itemsAmount-container">
+                    <p class="bill-text">CANTIDAD DE ITEMS: </p>
+                    <p class="bill-text bill-items-amount">1</p>
+                </div>
+                <div class="products-registry-container">
+                    <div class="products-container-title-container">
+                        <p class="bill-text products-container-title">Producto</p>
+                        <p class="bill-text products-container-title">Cantidad</p>
+                        <p class="bill-text products-container-title">Valor</p>
+                    </div>
+                    <div class="products-container">
+                        <!--div class="product">
+                            <p class="bill-text product-name">HELADO</p>
+                            <p class="bill-text product-price">$ 6.000</p>
+                        </div-->
+                    </div>
+                    <div class="totalPrice-container">
+                        <p class="bill-text">TOTAL</p>
+                        <p class="bill-text totalPrice-text">$ 0</p>
+                    </div>
+                </div>
+            </div>
+            <div class="buttons-container">
+                <button class="button start-button">Iniciar Venta F3</button>
+                <button class="button finish-button">Finalizar Venta F5</button>
+                <br>
+                <button class="button edit-button">Editar Precio F2</button>
+                <button class="button delete-button">Borrar Producto F7</button>
+                <button class="button cancel-button">Suspender Venta F9</button>
+                <br>
+                <button class="button copy-button">Copiar Recibo F1</button>
+
+            </div>
+        </main>
+        <script src="product.js"></script>
+        <script src="client.js"></script>
+        <script src="script.js"></script>
+    </body>
+</html>
