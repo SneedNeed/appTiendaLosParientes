@@ -79,7 +79,7 @@ const chooseOption = (option, father, index, type)=>{
     }
 }
 const addOption =(container, product)=>{
-    container.innerHTML += `<p class="possibleOption">${product.name}</p>`;
+    container.innerHTML += `<p class="possibleOption">${product.price == 0 ? 'Crear Producto "' : ''}${product.name}${product.price == 0 ?'"' : ''}</p>`;
 }
 const addProduct = product =>{
     let price = product.price;
@@ -156,7 +156,10 @@ productSearcher.addEventListener('input', ()=>{
     if(productSearcher.value.length >= 1){
             
         foundProducts = getPossibleProducts(productSearcher.value);
-        foundProducts.forEach(product=> addOption(productSelecter, product))
+        if(foundProducts.length > 0)
+            foundProducts.forEach(product=> addOption(productSelecter, product))
+        else
+            addOption(productSelecter, new Product(productSearcher.value, 0));
         
         if(productSelecter.childElementCount > 0)
             chooseOption(productSelecter.children[0], productSelecter, 0, 0);
@@ -180,7 +183,7 @@ clientSearcher.addEventListener('blur', ()=>clearSelector(clientSearcher, client
 
 productsContainer.addEventListener('click', e=>{
     const billProduct = e.target.closest('.product');
-    if(billProduct & !modifingProductAmount){
+    if(billProduct && !modifingProductAmount){
         //console.log('clic en ' + billProduct);
         chooseBillProduct(billProduct);
     }
@@ -248,9 +251,15 @@ addEventListener('keydown', e =>{
                     }
                     //console.log(onlyInts);
                 }else{
-                    if(chosenOption[0]){
-                        if(chosenOption[3] == 0){
-                            let foundProduct = foundProducts[chosenOption[2]];
+                    console.log(chosenOption)
+                    if(chosenOption[3] == 0 || productSearcher.value.length > 0){
+                        if(chosenOption[0]){
+                            console.log('Esto es cuando se encontro un Producto');
+                            let foundProduct = foundProducts.length > 0? foundProducts[chosenOption[2]] : new Product(productSearcher.value, 0);
+                            
+                            if(foundProducts.length == 0)
+                                products.push(foundProduct);
+
                             const productCopy = {...foundProduct};
                             billProducts.push(productCopy);
                             addProduct(foundProduct);
@@ -268,12 +277,16 @@ addEventListener('keydown', e =>{
                             billItemsAmount.innerHTML = productsContainer.childElementCount;
                             updateTotalPrice();
                             clearSelector(productSearcher, productSelecter);
-                        }else if(chosenOption[3] == 1){
-                            chosenClient = foundClients[chosenOption[2]];
-                            billClient.innerHTML = chosenClient.name;
-                            clearSelector(clientSearcher, clientSelecter);
+                        }else{
+                            console.log('Esto es cuando NO se encontro un producto');
+                            
                         }
+                    }else if(chosenOption[3] == 1){
+                        chosenClient = foundClients[chosenOption[2]];
+                        billClient.innerHTML = chosenClient.name;
+                        clearSelector(clientSearcher, clientSelecter);
                     }
+                    
                 }
                 break;
             case 'F2':
