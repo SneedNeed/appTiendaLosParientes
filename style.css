@@ -122,6 +122,19 @@ body{
 .product{
     border-radius: 4px;
     cursor: pointer;
+    height: 25px;
+    align-items: center;
+}
+.product p, .products-container-title{
+    width: 80px;
+    text-align: start;
+}
+.product-price{
+    text-align: start !important;
+    width: 100px !important;
+}
+.product-amount{
+    text-align: center !important; 
 }
 .product-name, .product-price{
     margin: 2px 0;

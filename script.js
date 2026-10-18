@@ -12,6 +12,17 @@ const billId = document.querySelector(".bill-id");
 const billClient = document.querySelector(".bill-client");
 const billItemsAmount = document.querySelector(".bill-items-amount");
 
+//Buttons
+const startBillButton = document.querySelector('.start-button');
+const endBillButton = document.querySelector('.finish-button');
+const editButton = document.querySelector('.edit-button');
+const deleteButton = document.querySelector('.delete-button');
+
+const cancelButton = document.querySelector('.cancel-button');
+const copyBillButton = document.querySelector('.copy-button');
+
+const billContainer = document.querySelector('.bill-container');
+
 
 const productsContainer = document.querySelector(".products-container");
 
@@ -58,7 +69,7 @@ let chosenProduct = [/*producto, etiqueta*/];
 
 let billNumber = 0;
 
-let billStarted = true;
+let billStarted = false;
 let modifingProductAmount = false;
 
 let editingPriceProduct = false;
@@ -123,28 +134,59 @@ const getBillProductNumber = billProduct =>{return parseInt(billProduct.classNam
 const chooseProductToEdit = billProduct=>{
     editingPriceProduct = true;
     
+    let actAmount = parseInt(billProduct.children[1].innerHTML);
+    let actPrice = billProducts[getBillProductNumber(billProduct)].price;
+    billProduct.children[1].contentEditable = true;
     billProduct.children[2].contentEditable = true;
     
-    billProduct.children[2].innerHTML = billProducts[getBillProductNumber(billProduct)].price;
+    billProduct.children[2].innerHTML = actPrice / actAmount;
     billProduct.children[2].focus();
 }
 const chooseBillProduct = product =>{
     if(chosenProduct[1]){
-        document.querySelector(`.${chosenProduct[0].name}`).removeAttribute('id');
+        chosenProduct[1].removeAttribute('id');
     }
 
     chosenProduct = [billProducts[getBillProductNumber(product)], product]
     chosenProduct[1].id = 'option-chosen';
+    updateButtonStates();
 
 }
 const saveBillProductPrice = productChosen=>{
-    const onlyInts = parseInt(productChosen.children[2].innerHTML.replace(/\D/g, ''));
-    productChosen.children[2].innerHTML = `$ ${getNumberFormat(onlyInts)}`;
+    const actPrice = parseInt(productChosen.children[2].innerHTML.replace(/\D/g, ''));
+    const tempAmount = parseInt(productChosen.children[1].innerHTML.replace(/\D/g, ''));
+    
+    const actAmount = tempAmount > 0 ? tempAmount : 1;
+
+    const billProduct = billProducts[getBillProductNumber(productChosen)];
+
+    productChosen.children[2].innerHTML = `$ ${getNumberFormat(actPrice * actAmount)}`;
     productChosen.children[2].contentEditable = false;
-    billProducts[getBillProductNumber(productChosen)].price = onlyInts;
+
+    productChosen.children[1].innerHTML = actAmount;
+    productChosen.children[1].contentEditable = false;
+    
+    billProduct.price = actPrice * actAmount;
     editingPriceProduct = false;
     updateTotalPrice();
-    return onlyInts;
+    return actPrice;
+}
+const updateBillProductClasses = ()=>{
+    for(let i = 0; i < billProducts.length; i ++){
+        productsContainer.children[i].className = 
+        `product ${billProducts[i].name} product${i + 1}`;
+    }
+}
+const deleteChosenBillProduct = () =>{
+    if(chosenProduct[1] && !modifingProductAmount){
+        billProducts.splice(getBillProductNumber(chosenProduct[1]), 1);
+        chosenProduct[1].remove();
+        chooseOption(null, null, -1, -1);
+        updateTotalPrice();
+        updateBillProductClasses();
+        console.log(billProducts);
+        updateButtonStates();
+    }
 }
 
 const updateTotalPrice = ()=>
@@ -184,7 +226,6 @@ clientSearcher.addEventListener('blur', ()=>clearSelector(clientSearcher, client
 productsContainer.addEventListener('click', e=>{
     const billProduct = e.target.closest('.product');
     if(billProduct && !modifingProductAmount){
-        //console.log('clic en ' + billProduct);
         chooseBillProduct(billProduct);
     }
 })
@@ -237,24 +278,27 @@ addEventListener('keydown', e =>{
                             break;
                         case '2':
                             //Se guarda el precio nuevo, se establece en la variable productos y se guarda en el localStorage 
-                            chosenProduct[0].price = newPrice;
+                            //chosenProduct[0].price = newPrice;
+                            products.forEach(e=>{
+                                if(e.name == chosenProduct[0].name){
+                                    e.price = newPrice;
+                                }
+                            })
                             //Aqui falta guardar el producto en el localStorage
                             break;
                         case '3':
                             //Se agrega una nueva excepcion al cliente
-                            chosenClient.addException(chosenProduct[0].name, newPrice);
+                            if(chosenClient)
+                                chosenClient.addException(chosenProduct[0].name, newPrice);
                             //Aqui falta guardar el cliente en el localStorage
                             break;
                         default:
                             //Cambio temporal
                             break;
                     }
-                    //console.log(onlyInts);
                 }else{
-                    console.log(chosenOption)
                     if(chosenOption[3] == 0 || productSearcher.value.length > 0){
                         if(chosenOption[0]){
-                            console.log('Esto es cuando se encontro un Producto');
                             let foundProduct = foundProducts.length > 0? foundProducts[chosenOption[2]] : new Product(productSearcher.value, 0);
                             
                             if(foundProducts.length == 0)
@@ -295,16 +339,90 @@ addEventListener('keydown', e =>{
                     chooseProductToEdit(chosenProduct[1]);
                 }
                 break;
+            case 'F7':
+                e.preventDefault();
+                
+                deleteChosenBillProduct();
+                
+                break;
+            case 'F3':
+                e.preventDefault();
+                startBill();
+                break;
+            case 'F1':
+                e.preventDefault();
+                copyBill(billContainer);
+                break;
         }
     //}
 })
 
-const startBill = ()=>{
+async function copyBill(selectorOElemento) {
+    chooseOption(null, null, -1, -1);
+    const elemento = typeof selectorOElemento === 'string' 
+        ? document.querySelector(selectorOElemento) 
+        : selectorOElemento;
+
+    if (!elemento) {
+        console.error("El elemento a capturar no existe en el DOM.");
+        return;
+    }
+
+    try {
+        const blobPromise = html2canvas(elemento, {
+            scale: 2,
+            backgroundColor: null,
+            useCORS: true,   // <--- ¡Crucial para permitir imágenes externas/locales!
+            allowTaint: true // <--- Evita que falle si algún recurso cruza políticas de seguridad
+        }).then(canvas => {
+            return new Promise((resolve, reject) => {
+                canvas.toBlob(blob => {
+                    if (blob) resolve(blob);
+                    else reject(new Error("El canvas generó un blob vacío."));
+                }, "image/png");
+            });
+        });
+
+        const item = new ClipboardItem({ "image/png": blobPromise });
+        await navigator.clipboard.write([item]);
+        
+        console.log("¡Imagen del recibo copiada con éxito!");
+
+    } catch (error) {
+        console.error("Ocurrió un error al intentar copiar la imagen:", error);
+    }
+}
+
+const updateBillTime =() =>{
+
     let hour = date.getHours();
     billTime.innerHTML = `${hour > 12? hour - 12 : hour}:${date.getMinutes()}:${date.getSeconds()} ${hour >= 12 ? 'pm' : 'am'}`;
-    billId.innerHTML = ++billNumber;
+    billDate.innerHTML = `${date.getDate()}/${monthNames[date.getMonth()]}/${date.getFullYear()}`;
+
+}
+
+const startBill = ()=>{
+    if(!billStarted){
+        updateBillTime();
+        billId.innerHTML = ++billNumber;
+        billStarted = true;
+        billItemsAmount.innerHTML = 0;
+        updateButtonStates();
+
+        productSearcher.focus();
+    }
+}
+const updateButtonStates = ()=>{
+    startBillButton.disabled = billStarted;
+    endBillButton.disabled = !billStarted;
+    editButton.disabled = chosenProduct[0] == null;
+    deleteButton.disabled = chosenProduct[0] == null;
+    cancelButton.disabled = !billStarted;
+    copyBillButton.disabled = billStarted || billNumber <= 0; 
+
+    productSearcher.disabled = !billStarted;
+    clientSearcher.disabled = !billStarted;
 }
 billItemsAmount.innerHTML = 0;
-startBill();
-billDate.innerHTML = `${date.getDate()}/${monthNames[date.getMonth()]}/${date.getFullYear()}`;
-
+updateButtonStates();
+updateBillTime();
