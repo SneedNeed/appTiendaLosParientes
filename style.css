@@ -105,6 +105,7 @@ body{
     margin: 5px 5px;
     border-radius: 3px;
     border: solid #515151 1px;
+    cursor: pointer;
 }
 .totalPrice-container{
     margin-top: 4vh;
